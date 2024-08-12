@@ -16,8 +16,9 @@
 5. Levantar la Base de Datos
 ```docker-compose up -d```
 
-6. Ejecutar SEED (para llenar la BD)
+6. Levantar la Base de Datos
+```yarn start:dev```
+
+7. Ejecutar SEED (para llenar la BD)
 ```http://localhost:3000/api/seed```
 
-7. Levantar la Base de Datos
-```yarn start:dev```

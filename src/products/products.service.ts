@@ -7,6 +7,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from '../common/dtos/pagination.dto';
 import { validate as isUUID} from 'uuid';
 import { ProductImage, Product } from './entities';
+import { UserAuth } from '../auth/entities/user.auth.entity';
 
 @Injectable()
 export class ProductsService {
@@ -24,7 +25,7 @@ export class ProductsService {
   ){}
 
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: UserAuth) {
     
     try {
       
@@ -43,7 +44,8 @@ export class ProductsService {
 
       const product = this.productRepository.create({
         ...productDetails,
-        images: images.map( image => this.productImageRepository.create({ url: image }) )
+        images: images.map( image => this.productImageRepository.create({ url: image }) ),
+        user,
       }); //esta linea hace una instancia de producto
       await this.productRepository.save(product); //esta linea guarda en la BD
 
@@ -112,7 +114,7 @@ export class ProductsService {
     }
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: UserAuth) {
 
     const { images, ...toUpdate } = updateProductDto;
 
@@ -136,6 +138,8 @@ export class ProductsService {
         )
       }
 
+      product.user = user;
+      
       await queryRunner.manager.save( product );
       await queryRunner.commitTransaction(); //aquí es donde impacta en la base de datos
       await queryRunner.release();
